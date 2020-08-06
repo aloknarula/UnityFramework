@@ -1,7 +1,9 @@
 /**
 =====================
+// license at:
+https://github.com/aloknarula/UnityFramework/tree/master/StateMachine
 Name:			SimpleState.cs
-Version:		0.1
+Version:		1.1
 Update Date:	17, May, 2015
 Author:			Alok Narula
 Description:	
@@ -13,62 +15,108 @@ using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using System.Collections;
 
-public class SimpleState : MonoBehaviour
+namespace SimpleFramework
 {
-    [SerializeField]
-    private string m_stateName;
-    public string StateName { get { return m_stateName; }}
-
-    public UnityEvent m_onEnter;
-    public UnityEvent m_onExit;
-
-    protected SimpleStateMachineMono m_stateMachine;
-
-    public virtual void Start()
+    public class SimpleState : MonoBehaviour
     {
-        m_stateMachine.RegisterState(this);
-    }
+        [Header("Simple State")]
+        [SerializeField]
+        private string m_stateName;
+        public string StateName { get { return m_stateName; } }
+        [SerializeField]
+        private string m_exitState;
+        public string ExitState { get { return m_exitState; } }
 
-    public virtual void Awake()
-    {
-        if(m_stateName == "")
+        [SerializeField]
+        private UnityEvent m_onEnter;
+        [SerializeField]
+        private UnityEvent m_onExit;
+
+        protected SimpleStateMachineMono m_stateMachine;
+
+        public virtual void Start()
         {
-            Debug.LogError(name + " state name not set");
-            return;
+            m_stateMachine.RegisterState(this);
         }
-        SimpleStateMachineMono sm = GetComponent<SimpleStateMachineMono>();
-        if(sm == null)
+
+        public virtual void Awake()
         {
-            sm = GetComponentInParent<SimpleStateMachineMono>();
+            if (m_stateName == "")
+            {
+                Debug.LogError(name + " state name not set");
+                return;
+            }
+            SimpleStateMachineMono sm = GetComponent<SimpleStateMachineMono>();
+            if (sm == null)
+            {
+                sm = GetComponentInParent<SimpleStateMachineMono>();
+            }
+            if (sm == null)
+            {
+                Debug.LogError(name + " State machine not present.");
+                return;
+            }
+            m_stateMachine = sm;
         }
-        if(sm == null)
+
+        public virtual void Update()
         {
-            Debug.LogError(name + " State machine not present.");
-            return;
+
         }
-	    m_stateMachine = sm;
-	}
-	
-    public virtual void Update()
-    {
-	
-	}
 
-    public virtual void OnEnter()
-    {
-        m_onEnter.Invoke();
-    }
+        public virtual void OnStateTriggerEnter(Collider other)
+        {
 
-    public virtual void OnExit()
-    {
-        m_onExit.Invoke();
-    }
+        }
+        
+        public virtual void OnStateTriggerExit(Collider other)
+        {
 
-    public virtual void OnUpdate()
-    {
-    }
+        }
+        
+        public virtual void OnStateCollisionEnter(Collision collision)
+        {
 
-    public virtual void OnFixedUpdate()
-    {
+        }
+        
+        public virtual void OnStateCollisionExit(Collision collision)
+        {
+
+        }
+
+        public virtual void ApplyRootMotion(Vector3 deltaPos, Quaternion deltaRotation)
+        {
+        }
+
+        public virtual void OnEnter()
+        {
+            m_onEnter.Invoke();
+        }
+
+        public virtual void OnExit()
+        {
+            m_onExit.Invoke();
+        }
+
+        public virtual void OnUpdate()
+        {
+        }
+
+        public virtual void OnFixedUpdate()
+        {
+        }
+
+        public virtual void OnRootMotion(Vector3 deltaPos, Quaternion deltaRot)
+        {
+        }
+
+        public virtual void AnimState(string eventName)
+        {
+
+        }
+
+        public virtual void AnimationEvent(string eventName)
+        {
+        }
     }
 }

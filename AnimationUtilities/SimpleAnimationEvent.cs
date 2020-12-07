@@ -22,9 +22,6 @@ public class SimpleAnimationEvent : StateMachineBehaviour
     public string m_eventName;
     [Range(0f,1f)]
     public float m_triggerAt;
-    //public bool m_loopEvent = false;
-    //[Range(0f, 1f)]
-    //public float m_resetLoopAt = 0.9f;
 
     int m_triggered;
     SimpleStateMachineMono m_stateMachine;
@@ -34,19 +31,11 @@ public class SimpleAnimationEvent : StateMachineBehaviour
         m_triggered = 0;
         if (m_stateMachine == null)
         {
-            ModelBase model = animator.GetComponent<ModelBase>();
-            if (model == null)
+            m_stateMachine = animator.GetComponent<SimpleStateMachineMono>();
+            if(m_stateMachine == null)
             {
-                Debug.LogError(animator.gameObject.name + " no model on animator");
-                return;
+                Debug.LogError(animator.gameObject.name + " no state machine component.");
             }
-
-            if(model.m_stateMachine == null)
-            {
-                Debug.LogError(animator.gameObject.name + " no controller above animator");
-                return;
-            }
-            m_stateMachine = model.m_stateMachine;
         }
     }
 

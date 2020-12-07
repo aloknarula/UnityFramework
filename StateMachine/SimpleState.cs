@@ -1,7 +1,7 @@
 /**
 =====================
 // license at:
-https://github.com/aloknarula/UnityFramework/tree/master/StateMachine
+https://github.com/aloknarula/UnityFramework
 Name:			SimpleState.cs
 Version:		1.1
 Update Date:	17, May, 2015

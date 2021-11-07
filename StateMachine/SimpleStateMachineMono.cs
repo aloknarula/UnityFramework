@@ -95,9 +95,11 @@ namespace SimpleFramework
                 m_currentState.OnExit();
             }
             m_stateTime = 0.0f;
-            m_requestedState.OnEnter();
             m_lastState = m_currentState;
             m_currentState = m_requestedState;
+
+            // call this in the end so that new state can be requested in OnEnter()
+            m_requestedState.OnEnter();
         }
 
         public void RegisterState(SimpleState state)
@@ -191,7 +193,7 @@ namespace SimpleFramework
                 m_currentState.OnUpdate();
             }
 
-            //SwitchState();
+            SwitchState();
         }
 
         public virtual void FixedUpdate()
@@ -200,7 +202,6 @@ namespace SimpleFramework
             {
                 m_currentState.OnFixedUpdate();
             }
-            SwitchState();
         }
 
         public virtual void AnimationEvent(string eventName)

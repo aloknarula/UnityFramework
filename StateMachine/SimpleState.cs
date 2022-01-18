@@ -31,6 +31,19 @@ namespace SimpleFramework
         private UnityEvent m_onEnter;
         [SerializeField]
         private UnityEvent m_onExit;
+        [SerializeField]
+        protected TimedEvent[] m_timedEvents;
+        public Transform Trans { get; private set; }
+
+        [System.Serializable]
+        public class TimedEvent
+        {
+            public string m_name;
+            public float m_time;
+            public UnityEvent m_events;
+            [HideInInspector]
+            public bool m_triggered;
+        }
 
         protected SimpleStateMachineMono m_stateMachine;
 
@@ -57,6 +70,18 @@ namespace SimpleFramework
                 return;
             }
             m_stateMachine = sm;
+            Trans = m_stateMachine.transform;
+        }
+
+        [ContextMenu("ExitState")]
+        void ContextRequestExitState()
+        {
+            if(ExitState == "")
+            {
+                return;
+            }
+
+            m_stateMachine.RequestState(ExitState);
         }
 
         public virtual void Update()
@@ -91,6 +116,11 @@ namespace SimpleFramework
         public virtual void OnEnter()
         {
             m_onEnter.Invoke();
+            
+            for (int i = 0; i < m_timedEvents.Length; i++)
+            {
+                m_timedEvents[i].m_triggered = false;
+            }
         }
 
         public virtual void OnExit()
@@ -99,6 +129,23 @@ namespace SimpleFramework
         }
 
         public virtual void OnUpdate()
+        {
+            for (int i = 0; i < m_timedEvents.Length; i++)
+            {
+                if (m_timedEvents[i].m_triggered)
+                {
+                    continue;
+                }
+
+                if (m_stateMachine.m_stateTime >= m_timedEvents[i].m_time)
+                {
+                    m_timedEvents[i].m_triggered = true;
+                    m_timedEvents[i].m_events.Invoke();
+                }
+            }
+        }
+
+        public virtual void OnLateUpdate()
         {
         }
 

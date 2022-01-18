@@ -28,13 +28,17 @@ namespace SimpleFramework
         protected Dictionary<string, SimpleState> m_states;
 
         // todo: make protected later
-        public SimpleState m_lastState;
-        public SimpleState m_currentState;
-        public SimpleState m_requestedState;
+        [SerializeField]
+        protected SimpleState m_lastState;
+        [SerializeField]
+        protected SimpleState m_currentState;
+        [SerializeField]
+        protected SimpleState m_requestedState;
 
         public Transform m_transform { get; private set; }
         public float m_stateTime { get; private set; }
         public string DefaultState { get { return m_defaultState; } }
+        public bool HasCurrentState {  get { return m_currentState != null; } }
 
         public void OverrideDefaultState(string newDefaultState)
         {
@@ -62,6 +66,11 @@ namespace SimpleFramework
                 return;
             }
             m_requestedState = state;
+        }
+
+        public ref readonly SimpleState GetCurrentState()
+        {
+            return ref m_currentState;
         }
 
         public string CurrentStateName()
@@ -99,7 +108,13 @@ namespace SimpleFramework
             m_currentState = m_requestedState;
 
             // call this in the end so that new state can be requested in OnEnter()
+            SwitchingToState(m_requestedState);
             m_requestedState.OnEnter();
+        }
+
+        public virtual void SwitchingToState(SimpleState state)
+        {
+
         }
 
         public void RegisterState(SimpleState state)
@@ -138,6 +153,11 @@ namespace SimpleFramework
 
         public virtual void Start()
         {
+            //PlayerPrefs.DeleteAll();
+            /*if (PlayerPrefs.HasKey("DefaultState"))
+            {
+                m_defaultState = PlayerPrefs.GetString("DefaultState");
+            }*/
             if (m_setDefaultStateOnStart)
             {
                 Invoke("DelayedSet", 0.1f);
@@ -184,13 +204,20 @@ namespace SimpleFramework
             }
         }
 
-        // Update is called once per frame
         public virtual void Update()
         {
             if (m_currentState != null)
             {
                 m_stateTime += Time.deltaTime;
                 m_currentState.OnUpdate();
+            }
+        }
+        
+        public virtual void LateUpdate()
+        {
+            if (m_currentState != null)
+            {
+                m_currentState.OnLateUpdate();
             }
 
             SwitchState();

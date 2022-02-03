@@ -238,5 +238,13 @@ namespace SimpleFramework
                 m_currentState.AnimationEvent(eventName);
             }
         }
+
+        public virtual void OnRootMotion(Vector3 deltaPos, Quaternion deltaRotation)
+        {
+            if(m_currentState != null)
+            {
+                m_currentState.OnRootMotion(deltaPos, deltaRotation);
+            }
+        }
     }
 }

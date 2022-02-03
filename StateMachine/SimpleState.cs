@@ -33,6 +33,8 @@ namespace SimpleFramework
         private UnityEvent m_onExit;
         [SerializeField]
         protected TimedEvent[] m_timedEvents;
+        [SerializeField]
+        protected SimpleEventRegisteration[] m_events;
         public Transform Trans { get; private set; }
 
         [System.Serializable]
@@ -43,6 +45,18 @@ namespace SimpleFramework
             public UnityEvent m_events;
             [HideInInspector]
             public bool m_triggered;
+        }
+
+        [System.Serializable]
+        public class SimpleEventRegisteration
+        {
+            public string m_eventName;
+            public UnityEvent m_event;
+
+            public void Event()
+            {
+                m_event.Invoke();
+            }
         }
 
         protected SimpleStateMachineMono m_stateMachine;
@@ -109,10 +123,6 @@ namespace SimpleFramework
 
         }
 
-        public virtual void ApplyRootMotion(Vector3 deltaPos, Quaternion deltaRotation)
-        {
-        }
-
         public virtual void OnEnter()
         {
             m_onEnter.Invoke();
@@ -121,11 +131,21 @@ namespace SimpleFramework
             {
                 m_timedEvents[i].m_triggered = false;
             }
+
+            for(int i=0; i<m_events.Length; i++)
+            {
+                SimpleEventHandler.Instance.RegisterToEvent(m_events[i].m_eventName, m_events[i].Event);
+            }
         }
 
         public virtual void OnExit()
         {
             m_onExit.Invoke();
+            
+            for(int i=0; i<m_events.Length; i++)
+            {
+                SimpleEventHandler.Instance.UnegisterToEvent(m_events[i].m_eventName, m_events[i].Event);
+            }
         }
 
         public virtual void OnUpdate()

@@ -219,8 +219,6 @@ namespace SimpleFramework
             {
                 m_currentState.OnLateUpdate();
             }
-
-            SwitchState();
         }
 
         public virtual void FixedUpdate()
@@ -229,6 +227,7 @@ namespace SimpleFramework
             {
                 m_currentState.OnFixedUpdate();
             }
+            SwitchState();
         }
 
         public virtual void AnimationEvent(string eventName)
